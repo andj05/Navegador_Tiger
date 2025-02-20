@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using Microsoft.Win32;
+
 namespace Anddy_Navegador
 {
     public partial class Tiger : Form
@@ -18,13 +20,12 @@ namespace Anddy_Navegador
 
         private void SetBrowserFeatureControl()
         {
-  
             string fileName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
 
-            using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(
+            using (var key = Registry.CurrentUser.CreateSubKey(
                 @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION"))
             {
-                key.SetValue(fileName, 11001, Microsoft.Win32.RegistryValueKind.DWord);
+                key.SetValue(fileName, 11001, RegistryValueKind.DWord);
             }
         }
 
@@ -37,7 +38,7 @@ namespace Anddy_Navegador
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true; 
+                e.SuppressKeyPress = true;
                 NavegadorA.Navigate(URLNav.Text);
             }
         }
@@ -75,6 +76,31 @@ namespace Anddy_Navegador
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
             NavegadorA.GoHome();
+        }
+
+        private void NavegadorA_NavigationError(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            MessageBox.Show("Error al cargar la página.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Control | Keys.R:
+                    NavegadorA.Refresh();
+                    return true;
+                case Keys.Control | Keys.H:
+                    NavegadorA.GoHome();
+                    return true;
+                case Keys.Control | Keys.B:
+                    NavegadorA.GoBack();
+                    return true;
+                case Keys.Control | Keys.F:
+                    NavegadorA.GoForward();
+                    return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }
