@@ -75,7 +75,7 @@ namespace Anddy_Navegador
 
         private void toolStripButton5_Click(object sender, EventArgs e)
         {
-            NavegadorA.GoHome();
+            NavegadorA.Navigate("https://www.google.com");
         }
 
         private void NavegadorA_NavigationError(object sender, WebBrowserNavigatedEventArgs e)
