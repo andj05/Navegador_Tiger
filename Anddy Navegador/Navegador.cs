@@ -16,6 +16,7 @@ namespace Anddy_Navegador
             NavegadorA.ScriptErrorsSuppressed = true;
             SetBrowserFeatureControl();
             NavegadorA.Navigate("https://www.google.com");
+            NavegadorA.Dock = DockStyle.Fill; 
         }
 
         private void SetBrowserFeatureControl()
@@ -25,9 +26,17 @@ namespace Anddy_Navegador
             using (var key = Registry.CurrentUser.CreateSubKey(
                 @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION"))
             {
+                // Use IE11 mode
                 key.SetValue(fileName, 11001, RegistryValueKind.DWord);
             }
+
+            using (var key = Registry.CurrentUser.CreateSubKey(
+                @"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_ENABLE_CLIPCHILDREN_OPTIMIZATION"))
+            {
+                key.SetValue(fileName, 1, RegistryValueKind.DWord);
+            }
         }
+
 
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
@@ -39,7 +48,9 @@ namespace Anddy_Navegador
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                NavegadorA.Navigate(URLNav.Text);
+                string searchQuery = URLNav.Text;
+                string googleSearchUrl = $"https://www.google.com/search?q={Uri.EscapeDataString(searchQuery)}";
+                NavegadorA.Navigate(googleSearchUrl);
             }
         }
 
@@ -63,7 +74,7 @@ namespace Anddy_Navegador
             NavegadorA.GoBack();
         }
 
-        private void toolStripButton3_Click(object sender, EventArgs e)
+        private void Refrescar(object sender, EventArgs e)
         {
             NavegadorA.Refresh();
         }
